@@ -60,11 +60,27 @@ export const getMovieDetails = async (id: string): Promise<Movie | null> => {
   }
 };
 
-export const getWatchlist = async (): Promise<Movie[]> => {
-  // In a real application, this would fetch the user's watchlist from a backend
-  // For now, we'll return a mock watchlist
-  const mockWatchlist = await searchMovies('popular');
-  return mockWatchlist.slice(0, 4);
+
+export const getWatchlist = (): Movie[] => {
+  const data = localStorage.getItem('watchlist');
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+};
+
+export const addToWatchlist = (movie: Movie) => {
+  const current = getWatchlist();
+  if (!current.find((m) => m.id === movie.id)) {
+    localStorage.setItem('watchlist', JSON.stringify([...current, movie]));
+  }
+};
+
+export const removeFromWatchlist = (movieId: number) => {
+  const current = getWatchlist();
+  localStorage.setItem('watchlist', JSON.stringify(current.filter((m) => m.id !== movieId)));
 };
 
 const mapMovieData = (data: any): Movie => ({

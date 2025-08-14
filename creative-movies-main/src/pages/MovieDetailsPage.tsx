@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getMovieDetails } from '../modules/apiModule';
+import { getMovieDetails, addToWatchlist, getWatchlist } from '../modules/apiModule';
 import { Movie } from '../types';
-import { Star, Clock, Plus } from 'lucide-react';
+import { Star, Clock, Plus, Check } from 'lucide-react';
 
-const MovieDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [movie, setMovie] = useState<Movie | null>(null);
+function MovieDetailsPage() {
+  const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [inWatchlist, setInWatchlist] = useState(false);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       if (id) {
         const details = await getMovieDetails(id);
         setMovie(details);
+        const watchlist = getWatchlist();
+        setInWatchlist(details ? !!watchlist.find((m) => m.id === details.id) : false);
       }
     };
     fetchMovieDetails();
   }, [id]);
+
+  const handleAddToWatchlist = () => {
+    if (movie && !inWatchlist) {
+      addToWatchlist(movie);
+      setInWatchlist(true);
+    }
+  };
 
   if (!movie) {
     return <div>Loading...</div>;
@@ -53,9 +63,13 @@ const MovieDetailsPage: React.FC = () => {
             <h2 className="text-xl font-semibold mb-2">Cast</h2>
             <p>{movie.cast.slice(0, 5).join(', ')}</p>
           </div>
-          <button className="bg-gold text-gray-900 px-4 py-2 rounded-lg flex items-center hover:bg-yellow-500 transition-colors">
-            <Plus className="mr-2" />
-            Add to Watchlist
+          <button
+            className={`bg-gold text-gray-900 px-4 py-2 rounded-lg flex items-center transition-colors ${inWatchlist ? 'opacity-60 cursor-not-allowed' : 'hover:bg-yellow-500'}`}
+            onClick={handleAddToWatchlist}
+            disabled={inWatchlist}
+          >
+            {inWatchlist ? <Check className="mr-2" /> : <Plus className="mr-2" />}
+            {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
           </button>
         </div>
       </div>

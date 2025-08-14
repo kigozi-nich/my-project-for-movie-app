@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import MovieCard from '../components/MovieCard';
-import { getWatchlist } from '../modules/apiModule';
+import { getWatchlist, removeFromWatchlist } from '../modules/apiModule';
 import { Movie } from '../types';
 
-const WatchlistPage: React.FC = () => {
-  const [watchlist, setWatchlist] = useState<Movie[]>([]);
+function WatchlistPage() {
+  const [watchlist, setWatchlist] = useState([]);
+
 
   useEffect(() => {
-    const fetchWatchlist = async () => {
-      const list = await getWatchlist();
-      setWatchlist(list);
-    };
-    fetchWatchlist();
+    setWatchlist(getWatchlist());
   }, []);
+
+  const handleRemove = (id: number) => {
+    removeFromWatchlist(id);
+    setWatchlist(getWatchlist());
+  };
 
   return (
     <div>
@@ -22,7 +24,15 @@ const WatchlistPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {watchlist.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <div key={movie.id} className="relative">
+              <MovieCard movie={movie} />
+              <button
+                className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-800 transition-colors"
+                onClick={() => handleRemove(movie.id)}
+              >
+                Remove
+              </button>
+            </div>
           ))}
         </div>
       )}
