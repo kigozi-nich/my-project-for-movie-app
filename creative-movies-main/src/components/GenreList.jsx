@@ -13,6 +13,11 @@ const GenreList = ({ genres, onGenreSelect, selectedGenre }) => {
       >
         All Movies
       </button>
+      {selectedGenre && (
+        <button onClick={() => onGenreSelect(null)} className="px-3 py-1 ml-2 rounded text-sm text-gray-400 hover:text-gray-200">
+          Clear filter ✕
+        </button>
+      )}
       {genres.map((genre) => (
         <button
           key={genre.id}

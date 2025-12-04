@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchTrendingMovies, searchMovies, getMovieDetails, fetchGenres, fetchMoviesByGenre } from './services/tmdb';
+import { fetchTrendingMovies, searchMovies, getMovieDetails, fetchGenres, fetchMoviesByGenre } from './modules/apiModule';
 import MovieCard from './components/MovieCard';
 import MovieDetails from './components/MovieDetails';
 import SearchBar from './components/SearchBar';

@@ -1,4 +1,6 @@
-const API_KEY = '17dc295a4b9b74b91d9a301ef0b20056';
+// Read API key from Vite environment variable to avoid leaking secrets in source control.
+// Set `VITE_TMDB_API_KEY` in a local `.env` file (not committed).
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 export const fetchTrendingMovies = async () => {
