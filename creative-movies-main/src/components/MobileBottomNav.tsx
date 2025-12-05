@@ -27,9 +27,8 @@ const MobileBottomNav: React.FC = () => {
             >
               <div className="w-6 h-6" aria-hidden>{item.icon}</div>
               <span className="text-xs mt-0.5">{item.label}</span>
-                        className={`flex flex-col items-center text-sm text-white ${active ? 'text-gold' : 'opacity-90'}`}
-                        aria-label={item.label}
-                        aria-current={active ? 'page' : undefined}
+            </Link>
+          );
         })}
       </div>
     </nav>
