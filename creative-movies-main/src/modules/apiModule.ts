@@ -116,3 +116,25 @@ export const removeFromWatchlist = (movieId: number) => {
   const current = getWatchlist();
   localStorage.setItem('watchlist', JSON.stringify(current.filter((m) => m.id !== movieId)));
 };
+
+export const getFavorites = (userId: string): Movie[] => {
+  const data = localStorage.getItem(`favorites_${userId}`);
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+};
+
+export const addToFavorites = (movie: Movie, userId: string) => {
+  const current = getFavorites(userId);
+  if (!current.find((m) => m.id === movie.id)) {
+    localStorage.setItem(`favorites_${userId}`, JSON.stringify([...current, movie]));
+  }
+};
+
+export const removeFromFavorites = (movieId: number, userId: string) => {
+  const current = getFavorites(userId);
+  localStorage.setItem(`favorites_${userId}`, JSON.stringify(current.filter((m) => m.id !== movieId)));
+};

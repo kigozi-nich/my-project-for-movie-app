@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Film } from 'lucide-react';
+import { Film, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const MenuIcon = ({ className = 'w-6 h-6' }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -18,6 +19,7 @@ const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const firstLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -50,18 +52,27 @@ const Header: React.FC = () => {
   }, [open]);
 
   return (
-    <header className="bg-gray-800">
+    <header className="bg-primary-light shadow-lg">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center text-2xl font-bold text-gold">
+        <Link to="/" className="flex items-center text-2xl font-bold text-primary-white hover:text-accent-green transition-colors">
           <Film className="mr-2" />
           MovieMaster
         </Link>
 
-        {/* Desktop nav: hidden until xl so compact hamburger is shown on desktop too */}
-        <nav className="hidden xl:flex items-center space-x-6">
-          <Link to="/" className="hover:text-gold transition-colors">Home</Link>
-          <Link to="/watchlist" className="hover:text-gold transition-colors">Watchlist</Link>
-          <Link to="/profile" className="hover:text-gold transition-colors">Profile</Link>
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center space-x-6">
+          <Link to="/" className="text-primary-white hover:text-accent-green transition-colors font-secondary">Home</Link>
+          <Link to="/watchlist" className="text-primary-white hover:text-accent-green transition-colors font-secondary">Watchlist</Link>
+          <Link to="/favorites" className="text-primary-white hover:text-accent-green transition-colors font-secondary">Favorites</Link>
+          <Link to="/profile" className="text-primary-white hover:text-accent-green transition-colors font-secondary">Profile</Link>
+          {user ? (
+            <div className="flex items-center space-x-4">
+              <span className="text-primary-white font-secondary">Welcome, {user.username}</span>
+              <button onClick={logout} className="bg-accent-red text-primary-white px-4 py-2 rounded hover:bg-red-700 transition-colors font-secondary">Logout</button>
+            </div>
+          ) : (
+            <Link to="/login" className="bg-accent-green text-primary-white px-4 py-2 rounded hover:bg-green-700 transition-colors font-secondary">Login</Link>
+          )}
         </nav>
 
         {/* Mobile hamburger */}
@@ -88,16 +99,16 @@ const Header: React.FC = () => {
 
           <div
             ref={panelRef}
-            className="md:hidden fixed top-0 right-0 w-11/12 max-w-xs h-full bg-gray-900 text-white shadow-lg z-50 transform transition-transform duration-300 ease-out"
+            className="md:hidden fixed top-0 right-0 w-11/12 max-w-xs h-full bg-primary-light text-primary-white shadow-lg z-50 transform transition-transform duration-300 ease-out"
             role="dialog"
             aria-modal="true"
           >
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
-                <Link to="/" className="flex items-center text-xl font-bold text-gold">
+                <Link to="/" className="flex items-center text-xl font-bold text-primary-white">
                   <Film className="mr-2" /> MovieMaster
                 </Link>
-                <button onClick={() => setOpen(false)} className="p-2 rounded-md text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gold" aria-label="Close menu">
+                <button onClick={() => setOpen(false)} className="p-2 rounded-md text-primary-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-green" aria-label="Close menu">
                   <X />
                 </button>
               </div>
@@ -109,7 +120,7 @@ const Header: React.FC = () => {
                       ref={firstLinkRef}
                       to="/"
                       onClick={() => setOpen(false)}
-                      className="block px-3 py-2 rounded hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="block px-3 py-2 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-green font-secondary"
                     >
                       Home
                     </Link>
@@ -118,20 +129,41 @@ const Header: React.FC = () => {
                     <Link
                       to="/watchlist"
                       onClick={() => setOpen(false)}
-                      className="block px-3 py-2 rounded hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="block px-3 py-2 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-green font-secondary"
                     >
                       Watchlist
                     </Link>
                   </li>
                   <li>
                     <Link
+                      to="/favorites"
+                      onClick={() => setOpen(false)}
+                      className="block px-3 py-2 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-green font-secondary"
+                    >
+                      Favorites
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/profile"
                       onClick={() => setOpen(false)}
-                      className="block px-3 py-2 rounded hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="block px-3 py-2 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-green font-secondary"
                     >
                       Profile
                     </Link>
                   </li>
+                  {user ? (
+                    <>
+                      <li className="px-3 py-2 text-sm font-secondary">Welcome, {user.username}</li>
+                      <li>
+                        <button onClick={() => { logout(); setOpen(false); }} className="w-full text-left px-3 py-2 rounded bg-accent-red hover:bg-red-700 font-secondary">Logout</button>
+                      </li>
+                    </>
+                  ) : (
+                    <li>
+                      <Link to="/login" onClick={() => setOpen(false)} className="block px-3 py-2 rounded bg-accent-green hover:bg-green-700 font-secondary">Login</Link>
+                    </li>
+                  )}
                 </ul>
               </nav>
             </div>

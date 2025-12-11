@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://kigozi-nich.github.io/my-project-for-movie-app/creative-movies-main/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,6 +13,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
+    "@vercel/speed-insights": "^1.3.1",
     "axios": "^1.6.7",
     "lucide-react": "^0.539.0",
     "react": "^18.3.1",
